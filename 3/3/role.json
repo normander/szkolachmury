@@ -1,0 +1,15 @@
+{
+  "Name": "Custom Role 1",
+  "Id": null,
+  "IsCustom": true,
+  "Description": "Allows for turn on/off Virtual Machines and create ticket to Support",
+  "Actions": [
+    "Microsoft.Compute/virtualMachines/start/action",
+    "Microsoft.Compute/virtualMachines/powerOff/action",
+    "Microsoft.Support/supportTickets/write"
+  ],
+  "NotActions": [],
+  "AssignableScopes": [
+    "/subscriptions/<subscription_id>"
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "User name for the Virtual Machine."
+      }
+    },
+    "authenticationType": {
+      "type": "string",
+      "defaultValue": "password",
+      "allowedValues": [
+        "sshPublicKey",
+        "password"
+      ],
+      "metadata": {
+        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+      }
+    },
+    "adminPasswordOrKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+      }
+    },
+    "dnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+      }
+    },
+    "ubuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "18.04-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.5-LTS",
+        "16.04.0-LTS",
+        "18.04-LTS"
+      ],
+      "metadata": {
+        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    }
+  },
+  "variables": {
+    "location": "[parameters('location')]",
+    "adminUsername": "[parameters('adminUsername')]",
+    "adminPasswordOrKey": "[parameters('adminPasswordOrKey')]",
+    "authenticationType": "[parameters('authenticationType')]",
+    "ubuntuOSVersion": "[parameters('ubuntuOSVersion')]",
+    "storageAccountName": "stvmstszkchmeastus001",
+    "imagePublisher": "Canonical",
+    "imageOffer": "UbuntuServer",
+    "nicName1": "nic-vmszkchm001-training-01",
+    "nicName2": "nic-vmszkchm002-training-01",
+    "addressPrefix": "10.0.0.0/16",
+    "subnetName1": "snet-szkchm-eastus2-001",
+    "subnetName2": "snet-szkchm-eastus2-002",
+    "subnetPrefix1": "10.0.1.0/24",
+    "subnetPrefix2": "10.0.2.0/24",
+    "storageAccountType": "Standard_LRS",
+    "vmName1": "vmszkchm001",
+    "vmName2": "vmszkchm002",
+    "vmSize": "Standard_A1",
+    "virtualNetworkName": "vnet-training-westus-001",
+    "networkSecurityGroupName": "nsg-szkchm-001"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "[variables('nicName1')]",
+      "dependsOn": [
+        "[variables('virtualNetworkName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri":"https://raw.githubusercontent.com/normander/szkolachmury/master/3/2/templates/nic.json"        },
+        "parameters": {
+          "NICName": {"value": "[variables('nicName1')]"},
+          "virtualNetworkName": {"value": "[variables('virtualNetworkName')]"},
+          "subnetName": {"value": "[variables('subnetName1')]"},
+          "location": {"value": "[variables('location')]"}
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "[variables('nicName2')]",
+      "dependsOn": [
+        "[variables('virtualNetworkName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri":"https://raw.githubusercontent.com/normander/szkolachmury/master/3/2/templates/nic.json"
+        },
+        "parameters": {
+          "NICName": {"value": "[variables('nicName2')]"},
+          "virtualNetworkName": {"value": "[variables('virtualNetworkName')]"},
+          "subnetName": {"value": "[variables('subnetName2')]"},
+          "location": {"value": "[variables('location')]"}
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "[variables('vmName1')]",
+      "dependsOn": [
+        "[variables('storageAccountName')]",
+        "[variables('nicName1')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri":"https://raw.githubusercontent.com/normander/szkolachmury/master/3/2/templates/vm.json"
+        },
+        "parameters": {
+          "nicName": {"value": "[variables('nicName1')]"},
+          "vmName": {"value": "[variables('vmName1')]"},
+          "adminUsername": {"value": "[variables('adminUsername')]"},
+          "adminPasswordOrKey": {"value": "[variables('adminPasswordOrKey')]"},
+          "authenticationType": {"value": "[variables('authenticationType')]"},
+          "imagePublisher": {"value": "[variables('imagePublisher')]"},
+          "imageOffer": {"value": "[variables('imageOffer')]"},
+          "ubuntuOSVersion": {"value": "[variables('ubuntuOSVersion')]"},
+          "vmSize": {"value": "[variables('vmSize')]"},
+          "storageAccountName": {"value": "[variables('storageAccountName')]"},
+          "location": {"value": "[variables('location')]"}
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "[variables('vmName2')]",
+      "dependsOn": [
+        "[variables('storageAccountName')]",
+        "[variables('nicName2')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri":"https://raw.githubusercontent.com/normander/szkolachmury/master/3/2/templates/vm.json"
+        },
+        "parameters": {
+          "nicName": {"value": "[variables('nicName2')]"},
+          "vmName": {"value": "[variables('vmName2')]"},
+          "adminUsername": {"value": "[variables('adminUsername')]"},
+          "adminPasswordOrKey": {"value": "[variables('adminPasswordOrKey')]"},
+          "authenticationType": {"value": "[variables('authenticationType')]"},
+          "imagePublisher": {"value": "[variables('imagePublisher')]"},
+          "imageOffer": {"value": "[variables('imageOffer')]"},
+          "ubuntuOSVersion": {"value": "[variables('ubuntuOSVersion')]"},
+          "vmSize": {"value": "[variables('vmSize')]"},
+          "storageAccountName": {"value": "[variables('storageAccountName')]"},
+          "location": {"value": "[variables('location')]"}
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2018-11-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[variables('storageAccountType')]"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "comments": "Default Network Security Group for template",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2019-08-01",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "default-allow-22",
+            "properties": {
+              "priority": 1000,
+              "access": "Allow",
+              "direction": "Inbound",
+              "destinationPortRange": "22",
+              "protocol": "TCP",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2018-11-01",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[variables('networkSecurityGroupName')]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName1')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix1')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
+            }
+          },
+          {
+            "name": "[variables('subnetName2')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix2')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
