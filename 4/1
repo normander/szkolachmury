@@ -1,0 +1,33 @@
+♣	#TYDZIEN4.1 Na bazie swoich doświadczeń i podstawowej wiedzy o maszynach wirtualnych oraz Scale Set zaproponuj kilka kroków, które byś zrealizował w ramach takiej migracji. Przy każdym kroku napisz maksymalnie 2-3 zdania, jakie czynności w takim kroku byś zrealizował.
+Pamiętaj o ograniczeniach w chmurze, limitach oraz ograniczeniach co do tego, jakie parametry wirtualnych maszyn, możesz uzyskać w Azure.
+
+Wszelkie dodatkowe komentarz mile widziane! Wiem, że masz mało danych, ale… wiesz, ja też mam zawsze za mało danych do migracji, co nie powinno mnie powstrzymać, by zaplanować proces.
+
+
+
+1. Posortowanie maszyn per projekt, następnie per aplikacje.
+a) Taka lista pozwoli na poukładanie(często nie jest) maszyn wirtualnych per choćby ta sama aplikacja lub grupa aplikacji.
+b) Często te same aplikacje uruchamiane sa na maszynach o zupełnie odmiennych(niewykorzystywanych) zasobach, dobry moment na uspojnienie zasob na bazie monitoringu maszyn.
+
+2. Ustalenie dla każdej grupy maszyn rozmiaru maszyn wirtualnych, ruchu sieciowego itp.
+a) Przypisanie do grup aplikacji nazwy rozmiaru maszyny wirtualnej z azure oraz rodzaju dysku
+b) Na podstawie flow aplikacyjnego zaprojektowanie sieci w azure, podział stref sieci etc.
+
+3. Zestawienie vpn z firma w celu przenoszenia aplikacji w zaplanowanych parcjach.
+a) Utworzenie połaczenia per strefa sieciowa lub konkretna grupy(aby zapewnic wymagana izolacje)
+b) Sporzadzenie mapy sieci uwzględniajacej azure
+
+4. Przygotowanie(jeśli do tej pory nie istnieje) każdej grupy aplikacji jako deployment poprzez wybrane narzędzie do automatyzacji.
+a) VMSS to ułatwione zadanie dla narzędzi typu ansible, w łatwy sposob mozna przygotowac srodowisko zaraz po utworzeniu VMSS
+b) Wygoda w posiadaniu swojego środowiska, bezproblemowe testy w środowisku testowym.
+c) Po testach automatyzacje mozna zmigrowac do cloud-init
+
+5. Przenoszenie w porcjach grup maszyn wirtualnych(wygrzewanie środowiska)
+a) Uruchomienie grup VM, wdrożenia aplikacji, testowanie.
+
+6. Uruchomienie 10% środowiska on-premise w azure, wyłaczenie w własnym DC 10% środowisk.
+a) Utworzenie hybrydowego środowiska o ile aplikacje na to pozwalaja
+b) Właczenie przygotowanych maszyn do firmowego LB
+
+7. Powtarzanie punktu 5 i 6, aż do pełnej migracji metoda Lift&Shift
+a) Wykonanie pełnej migracji, zaprojektowanie LB w azure, migracja LB.

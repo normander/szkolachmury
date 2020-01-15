@@ -1,0 +1,38 @@
+♣	#TYDZIEN4.2 Virtual Machine Scale Set
+VMSS nie są często używane w projektach. W ramach zadania nr. 2 napisz mi proszę do jakich warstw aplikacji użyłbyś Scale Set a następnie spróbuj za pomocą Azure CLI zbudować swój prosty Scale Set.
+
+
+Jeśli padłoby na VMSS, na pewno wykorzystałbym to do warstwy webowej aplikacji(w modelu frontend-backend).
+Sam backend w zależności od logiki w aplikacji pozwalajacej na większa ilosc replik. W przypadku całych aplikacji, ktore w swoim modelu
+wykorzystuja jedna baze danych(stan przechowywany wylacznie w bazie danych)
+
+
+Tworzenie VMSS:
+
+az vmss create \
+  --resource-group szkchm \
+  --name myScaleSet \
+  --image UbuntuLTS \
+  --upgrade-policy-mode automatic \
+  --custom-data cloud-init.txt \
+  --admin-username azureuser \
+  --generate-ssh-keys
+
+az network lb rule create \
+  --resource-group szkchm \
+  --name myLoadBalancerRuleWeb \
+  --lb-name myScaleSetLB \
+  --backend-pool-name myScaleSetLBBEPool \
+  --backend-port 80 \
+  --frontend-ip-name loadBalancerFrontEnd \
+  --frontend-port 80 \
+  --protocol tcp
+
+az network lb rule delete \
+  --resource-group szkchm \
+  --name myLoadBalancerRuleWeb \
+  --lb-name myScaleSetLB
+
+az vmss delete \
+  --resource-group szkchm \
+  --name myScaleSet
