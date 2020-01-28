@@ -1,0 +1,36 @@
+#TYDZIEN5.1  Migracja do usług PaaS
+
+1. Z uwagi na przykład z życia, wszystkie systemy w firmie w ktorej pracuje oparte sa o k8s.
+Do tego uzylbym AKSa z uwagi na to, że większość aplikacji silnie komunikuje się z k8s api w roznych celach:
+* gracefull shutdown
+* rolling update
+* traffic redirect
+Na platformie on-premise muszę utrzymywac klastry kubernetes, tutaj mam to z paczki. Oszczednosc w migracji.
+
+2. Aplikacje kontenerowe, zyjace aktualnie jako docker-compose service
+* łatwa migracja do Azure Container Service
+* brak zmian w architekturze
+* proste przygotowanie skryptow migracyjnych
+
+3. Jeśli miałbym migrowac rowniez toolsy do azure, to:
+* Jenkins jako Azure Container Service, z uwagi, że jest silnie spreparowany
+* SonarQube jako Azure Container Service/AKS
+
+Czy to narzedzia pomocnicze, czy moze aplikacje klientow, wszystko jest opakowane w docker image dlatego aplikacje klientow mozliwie do AKS, toolsy Azure Container Service/AKS.
+
+
+#TYDZIEN5.2  Czego nie migrować do PaaS?
+
+1. Systemy zewnetrzne:
+* moze nie byc supportu na dzialanie jako cloud native
+* implementacja nie pozwala na migracje(np. silne korzystanie z systemu operacyjnego)
+* mozliwe wieksze koszty z uwagi na wprowadzenie zmian w aplikacji przez dostawce w celu przystosowania
+
+2. Prywatne systemy
+* jesli zawieraja wrazliwe dane
+* tylko podmioty wlasciwe moga przechowywac dane prawne
+
+3. Aplikacje monolityczne
+* konieczność rozbicia na moduły
+* zmiana architektury systemu
+* nieopłacalność, likwidacja długu technologicznego przy dostosowywaniu
