@@ -4,7 +4,8 @@ VMSS nie są często używane w projektach. W ramach zadania nr. 2 napisz mi pro
 
 Jeśli padłoby na VMSS, na pewno wykorzystałbym to do warstwy webowej aplikacji(w modelu frontend-backend).
 Sam backend w zależności od logiki w aplikacji pozwalajacej na większa ilosc replik. W przypadku całych aplikacji, ktore w swoim modelu
-wykorzystuja jedna baze danych(stan przechowywany wylacznie w bazie danych)
+wykorzystuja jedna baze danych(stan przechowywany wylacznie w bazie danych). Można wykorzystać do zwiększenia mocy obliczeniowej dla big data.
+Nadaje się również do tworzenia klastrów baz danych nosql(cassandra, mongodb, etcd)
 
 
 Tworzenie VMSS:

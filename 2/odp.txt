@@ -1,0 +1,53 @@
+#TYDZIEN2.1
+
+1. THROTTLING PATTERN
+
+- Requesty związane ze sprzedażą oraz prezentacja danych powinny mieć najwyższy priorytet w systemie
+
+- Importowanie towarów - możliwość sterowania throttlingiem w zależności od tego jak ważny jest partner, może być tutaj w znaczeniu partnera dla firmy.
+
+- W implementacji throttlingu uwzględnienie zliczania requestów per usługa(w kontekście mikro serwisów) do zastosowania auto skalowania w największy peak dla usługi
+
+2. SHARDING PATTERN
+
+- Shard lub pula per firma z jej produktami
+
+- The Lookup strategy w zależności od implementacji możemy tutaj zwracać się bezpośrednio do konkretnych shardów oszczędzając obciążenie innych komponentów
+
+- Shardy można skalować oraz replikować w przypadku dużego obciążenia.
+
+3. QUEUES AND BASED LOAD LEVELING PATTERN
+
+- Użycie kolejki w streamie składania zamówień - mamy wtedy kontrole nad obsługa zamówień w równomiernym dla systemu obciążeniu
+
+- W druga stronę - consumer może odczytywać z niej statusy zamówień
+
+- Względy kosztowe - na podstawie kolejki zamówień możemy oszacować zapotrzebowanie na dodatkowe instancje dla konkretnej usługi(wspomniałem tutaj również o tym w kontekście THROTTLING PATTERN)
+
+
+
+
+
+
+
+#TYDZIEN2.2
+
+1. THROTTLING PATTERN - tutaj na pewno swoje właściwości wykorzysta usługa API Management.
+
+Z paczki dostarcza nam mechanizm przełączania się na nowa wersje aplikacji bez przerwania świadczenia usług.
+
+Wystawia metryki na podstawie, których możemy decydować o skalowaniu danej usługi.
+
+2. SHARDING PATTERN
+
+Cosmos DB - skalowalność bez ograniczeń uwzględniona w implementacji aplikacji.
+
+Część naszej aplikacji odpowiedzialna za nadzorowanie wydajności, może sterować ilością replik shardów minimalizując koszty.
+
+Wygodne API do wykonywania zapytań.
+
+3. QUEUES AND BASED LOAD LEVELING PATTERN
+
+Azure Queue Storage - Aplikacja jest przygotowana na duża ilość danych.
+
+Jesteśmy w stanie śledzić przetwarzanie wiadomości w kolejce oraz reagować w przypadku, gdy consumer wiadomości uległ awarii.
